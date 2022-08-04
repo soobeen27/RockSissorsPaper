@@ -16,6 +16,10 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var computerPick: UIImageView!
     
+    @IBOutlet weak var userStatus: UILabel!
+    
+    @IBOutlet weak var computerStatus: UILabel!
+    
     let rspImage = ["rock" : UIImage(named: "rock")!, "scissors" : UIImage(named: "scissors")!, "paper" : UIImage(named: "paper")!]
     let readyImage = UIImage(named: "ready")
     
@@ -23,38 +27,78 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         userPick.image = readyImage
+        userStatus.text = ""
+        computerStatus.text = ""
     }
 
-    @IBAction func selectRock(_ sender: UIButton) {
-        userPick.image = rspImage["rock"]
-    }
-
-    @IBAction func selectScissors(_ sender: UIButton) {
-        userPick.image = rspImage["scissors"]
+//    @IBAction func selectRock(_ sender: UIButton) {
+//        userPick.image = rspImage["rock"]
+//        userStatus.text = "Rock"
+//    }
+//
+//    @IBAction func selectScissors(_ sender: UIButton) {
+//        userPick.image = rspImage["scissors"]
+//        userStatus.text = "Scissors"
+//    }
+//
+//    @IBAction func selectPaper(_ sender: UIButton) {
+//        userPick.image = rspImage["paper"]
+//        userStatus.text = "Paper"
+//    }
+    
+    @IBAction func rspButtonTapped(_ sender: UIButton) {
+        let choice = sender.currentTitle!
+        userStatus.text = choice
+        switch choice {
+        case "Rock":
+            userPick.image = rspImage["rock"]
+        case "Scissors":
+            userPick.image = rspImage["scissors"]
+        case "Paper":
+            userPick.image = rspImage["paper"]
+        default:
+            break
+        }
     }
     
-    @IBAction func selectPaper(_ sender: UIButton) {
-        userPick.image = rspImage["paper"]
-    }
     
     @IBAction func resetGame(_ sender: UIButton) {
         computerPick.image = readyImage
         userPick.image = readyImage
+        statusTitle.text = "You have to select"
+        userStatus.text = ""
+        computerStatus.text = ""
     }
+    
+    
     
     @IBAction func selectPick(_ sender: UIButton) {
         guard userPick.image != UIImage(named: "ready") else { return }
-        computerPick.image = rspImage.values.randomElement()
+        randomRSP()
         winOrLoose()
+    }
+    
+    func randomRSP() {
+        computerPick.image = rspImage.values.randomElement()
+        switch computerPick.image {
+        case rspImage["rock"]:
+            computerStatus.text = "Rock"
+        case rspImage["scissors"]:
+            computerStatus.text = "Scissors"
+        case rspImage["paper"]:
+            computerStatus.text = "Paper"
+        default:
+            break
+        }
     }
     
     func winOrLoose() {
         switch userPick.image {
         case let pick where pick == computerPick.image:
             statusTitle.text = "Draw"
-        case UIImage(named: "rock") where computerPick.image == UIImage(named: "scissors"),
-            UIImage(named: "scissors") where computerPick.image == UIImage(named: "paper"),
-            UIImage(named: "paper") where computerPick.image == UIImage(named: "rock"):
+        case rspImage["rock"] where computerPick.image == rspImage["scissors"],
+            rspImage["scissors"] where computerPick.image == rspImage["paper"],
+            rspImage["paper"] where computerPick.image == rspImage["rock"]:
             statusTitle.text = "Win"
         default:
             statusTitle.text = "loose"
